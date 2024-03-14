@@ -18,34 +18,6 @@ class middleware {
       next(error);
     }
   }
-  static async authorizationAdminOnly(req, res, next) {
-    try {
-      if (req.user.role === "Admin") {
-        next();
-      } else {
-        let data = await Cuisine.findByPk(req.params.id);
-        if (req.user.id === data.authorId) {
-          next();
-        } else {
-          throw { name: "accessNotAllowed" };
-        }
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-  static async authorizationAddUser(req, res, next) {
-    try {
-      console.log(req.user);
-      if (req.user.role === "Admin") {
-        next();
-      } else {
-        throw { name: "accessNotAllowed" };
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
   static errorHandler(err, req, res, next) {
     switch (err.name) {
       case "SequelizeValidationError":
@@ -78,6 +50,8 @@ class middleware {
       case "accessNotAllowed":
         res.status(403).json({ message: "Forbidden" });
         break;
+      case "Only finished Order can be deleted":
+        res.status(400).json({ message: "Only finished Order can be deleted" });
       default:
         console.log(err);
         res.status(500).json({ message: "Internal Server Error" });

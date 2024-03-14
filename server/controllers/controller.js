@@ -136,6 +136,33 @@ class Controller {
       next(error)
     }
   }
+  static async deleteOrder(req,res,next){
+    try {
+      let {OrderId} = req.params
+      let order = await Order.findByPk(OrderId)
+      if(!order) throw { name: "errorNotFound" }
+      if(order.status === "Success") throw {name : "Only finished Order can be deleted"}
+      await Item.destroy({
+        where : {
+          OrderId : OrderId
+        }
+      })
+      await Notification.destroy({
+        where : {
+          OrderId : OrderId
+        }
+      })
+      await order.destroy({
+        where :{
+          id: OrderId
+        }
+      })
+      res.status(200).json({message : "Success delete selected Order History"})
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  }
   static async listProduct(req,res,next){
     try {
       let product = await Product.findAll()
