@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Order.hasMany(models.Item)
+      Order.hasMany(models.Notification)
     }
   }
   Order.init({
@@ -38,21 +40,10 @@ module.exports = (sequelize, DataTypes) => {
         }, 
       }
     },
-    totalPrice: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate : {
-        notEmpty : {
-          msg : "Total Price is required"
-        },
-        notNull : {
-          msg : "Total Price is required"
-        }, 
-      }
-    },
     status: {
       type : DataTypes.STRING,
       allowNull : false,
+      defaultValue : "Created",
       validate : {
         notEmpty : {
           msg : "Status is required"
