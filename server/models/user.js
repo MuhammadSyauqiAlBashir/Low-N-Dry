@@ -61,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
             msg: "Adress is required",
           },
           equals: {
-            args: "Jakarta",
+            args: "DKI Jakarta",
             msg: "We are sorry, your area is not covered yet.",
           },
         },
