@@ -1,0 +1,87 @@
+[
+  {
+    "name": "Kaos/Baju",
+    "picture": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/1/5/4643015e-97df-4117-a2b9-ded7b000de7a.jpg",
+    "price": 3000
+  },
+  {
+    "name": "Kemeja",
+    "picture": "https://foresteradventure.com/wp-content/uploads/2022/01/1-3-1000x1000.jpg",
+    "price": 3500
+  },
+  {
+    "name": "Jas",
+    "picture": "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//94/MTA-12476821/tidak_ada_merk_jas_pria_hitam_jas_nikah_full01_c393fd94.jpg",
+    "price": 5000
+  },
+  {
+    "name": "Jaket",
+    "picture": "https://areioutdoorgear.co.id/wp-content/uploads/2023/07/WhatsApp-Image-2023-05-29-at-14.35.08-1.jpeg",
+    "price": 4000
+  },
+  {
+    "name": "Hoodie",
+    "picture": "https://img.abercrombie.com/is/image/anf/KIC_122-3168-1427-170_prod1.jpg?policy=product-extra-large",
+    "price": 4000
+  },
+  {
+    "name": "Celana Pendek",
+    "picture": "https://gd.image-gmkt.com/CALISTA-CALISTA-CELANA-PENDEK-RUMAHAN-BAHAN-ADEM-DAN-LEMBUT-3-MODEL/li/436/979/751979436.g_350-w-et-pj_g.jpg",
+    "price": 1500
+  },
+  {
+    "name": "Celana Training",
+    "picture": "https://ncrsport.com/img/storage/large/DO5297-010-1.jpg",
+    "price": 2500
+  },
+  {
+    "name": "Jeans",
+    "picture": "https://m231.com/cdn/shop/products/c929c792fd53802463a14104766e0c0b_800x.jpg?v=1650177992",
+    "price": 4500
+  },
+  {
+    "name": "celana Bahan",
+    "picture": "https://www.frozenshop.com/image/cache/data/Baju-Pria/2019/december/celana-bahan-formal-panjang-slimfit-hitam-1-700x700.jpg",
+    "price": 4000
+  },
+  {
+    "name": "Kaos Kaki",
+    "picture": "https://thumbor.sirclocdn.com/unsafe/720x/filters:quality(100):format(webp)/https://sf-0.sirclocdn.com/products/1682675557925057894_022be26c-4f19-4e02-af8b-c61eaa59c3be.jpg",
+    "price": 2000
+  },
+  {
+    "name": "Sempak",
+    "picture": "https://img.ws.mms.shopee.co.id/2a1e643dfde348dc57ba9cee5ea77021",
+    "price": 2000
+  },
+  {
+    "name": "Sprei",
+    "picture": "https://internalgroup.id/frontend/assets/img/article/detail/artikel-21-1.jpg",
+    "price": 25000
+  },
+  {
+    "name": "Sarung",
+    "picture": "https://internalgroup.id/frontend/assets/img/article/detail/artikel-21-1.jpg",
+    "price": 3500
+  },
+  {
+    "name": "Tirai Jendela",
+    "picture": "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//catalog-image/91/MTA-102548500/oem_oem_full01.jpg",
+    "price": 18000
+  },
+  {
+    "name": "Keset Kaki",
+    "picture": "https://down-id.img.susercontent.com/file/c9773afcb9f7ad8c60565ce7e10affa7",
+    "price": 8000
+  },
+  {
+    "name": "Tas",
+    "picture": "https://img.lazcdn.com/g/p/6a7ecdc716783189a918ed2d445562b2.jpg_960x960q80.jpg_.webp",
+    "price": 12000
+  },
+  {
+    "name": "Handuk",
+    "picture": "https://dynamic.zacdn.com/sARZS1UbhugXgD3tBSBVB2MVnQ8=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/chalmer-0198-1363283-1.jpg",
+    "price": 4000
+  }
+]
