@@ -50,7 +50,6 @@ class Controller {
   static async initiateMidtrans(req, res, next) {
     try {
       let snap = new midtransClient.Snap({
-        // Set to true if you want Production Environment (accept real transaction).
         isProduction: false,
         serverKey: "SB-Mid-server-1uBSXyKIGgK0ECeZfbLFJDHH",
       });
@@ -99,8 +98,92 @@ class Controller {
       res.json({ message: "Order Created", transactionToken });
     } catch (error) {
       console.log(error);
+      next(error);
     }
   }
+  static async getListOrder(req,res,next){
+    try {
+      let UserId = req.user.id
+      let order = await Order.findOne({
+        where : {
+          UserId
+        },
+        include : [
+          {
+            model : Item,
+            include : Product
+          },
+        ]
+      })
+      console.log(order);
+      res.status(200).json(order)
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  }
+  static async updateStatusOrder(req,res,next){
+    try {
+      let {OrderId} = req.params
+      let {status} = req.body
+      let order = await Order.findByPk(OrderId)
+      if(!order) throw { name: "errorNotFound" }
+      await order.update({
+        status : status,
+      })
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  }
+  static async listProduct(req,res,next){
+    try {
+      let product = await Product.findAll()
+      res.status(200).json(product)
+    } catch (error) {
+      next(error)
+      console.log(error);
+    }
+  }
+  static async createNotification (req,res,next){
+    try {
+      let UserId = req.user.id
+      let {detail, OrderId} = req.body
+      let notification = await Notification.create({
+        detail,
+        UserId,
+        OrderId
+      })
+      res.status(200).json(notification)
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  }
+  static async getNotification (req,res,next){
+    try {
+      let UserId = req.user.id
+      let listNotif = await Notification.findAll({
+        where : {
+          UserId : UserId
+        }
+      })
+      res.status(200).json({listNotif})
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  }
+  static async getProvince(req,res,next){
+    try {
+      let province = await Province.findAll()
+      res.status(200).json(province)
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  }
+
   // static async googleLogin(req, res, next) {
   //   const { googleToken } = req.body;
   //   try {
