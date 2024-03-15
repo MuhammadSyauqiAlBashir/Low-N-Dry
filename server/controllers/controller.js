@@ -2,6 +2,12 @@ const bcryptPass = require("../helpers/bcrypt");
 const midtransClient = require("midtrans-client");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client();
+var ImageKit = require("imagekit");
+let imagekit = new ImageKit({
+  publicKey: process.env.PUBLICKEY,
+  privateKey: process.env.PRIVATEKEY,
+  urlEndpoint: process.env.URLENDPOINT,
+});
 const Token = require("../helpers/jwt");
 const {
   User,
@@ -28,10 +34,9 @@ class Controller {
       const checkPass = bcryptPass.comparePassword(password, user.password);
       if (!checkPass) throw { name: "InvalidLogin" };
       const payload = { id: user.id };
-      const newToken = Token.genToken(payload);
-      res.status(200).json({ message: "Success Login", newToken });
+      const accessToken = Token.genToken(payload);
+      res.status(200).json({ message: "Success Login", accessToken });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -43,7 +48,6 @@ class Controller {
       });
       res.status(201).json(user);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -51,7 +55,7 @@ class Controller {
     try {
       let snap = new midtransClient.Snap({
         isProduction: false,
-        serverKey: "SB-Mid-server-1uBSXyKIGgK0ECeZfbLFJDHH",
+        serverKey: process.env.SERVERKEY,
       });
       let UserId = req.user.id;
       let { typeOfService } = req.body;
@@ -60,11 +64,11 @@ class Controller {
         typeOfService,
       });
       let { items } = req.body;
-      
+
       const createITems = async () => {
         let totalPrice = 0;
-        for (let i = 0 ;  i<items.length; i ++ ){
-          let item =  items[i]
+        for (let i = 0; i < items.length; i++) {
+          let item = items[i];
           let dataProduct = await Product.findByPk(item.ProductId);
           item.price = dataProduct.price;
           let peritems = item.totalPieces * item.price;
@@ -74,14 +78,14 @@ class Controller {
             OrderId: order.id,
             totalPieces: item.totalPieces,
             price: item.totalPieces * item.price,
-          })
+          });
         }
-        return totalPrice
+        return totalPrice;
       };
-      const resultTotalPrice = await createITems()
+      const resultTotalPrice = await createITems();
       let parameter = {
         transaction_details: {
-          order_id: `${order.id}-dev`,
+          order_id: process.env.NODE_ENV !== "production"? `${order.id}-dev` : `${order.id}-prod`,
           gross_amount: resultTotalPrice,
         },
         credit_card: {
@@ -95,119 +99,143 @@ class Controller {
 
       const transaction = await snap.createTransaction(parameter);
       let transactionToken = transaction.token;
-      res.json({ message: "Order Created", transactionToken });
+      res.json({
+        message: "Order Created",
+        transactionToken,
+        resultTotalPrice,
+      });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
-  static async getListOrder(req,res,next){
+  static async donePayment(req, res, next) {
     try {
-      let UserId = req.user.id
-      let order = await Order.findOne({
-        where : {
-          UserId
+      let { id } = req.params;
+      let order = await Order.findByPk({
+        where: {
+          id: id,
         },
-        include : [
+      });
+      if (!order) throw { name: "errorNotFound" };
+      if (order.status !== "Finished") {
+        order.update({
+          status: "Processed",
+        });
+      }
+      res.status(200).json({ message: "Order hasbeen updated to processed" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async getListOrder(req, res, next) {
+    try {
+      let UserId = req.user.id;
+      let order = await Order.findOne({
+        where: {
+          UserId,
+        },
+        include: [
           {
-            model : Item,
-            include : Product
+            model: Item,
+            include: Product,
           },
-        ]
-      })
+        ],
+      });
       console.log(order);
-      res.status(200).json(order)
+      res.status(200).json(order);
     } catch (error) {
-      console.log(error);
-      next(error)
+      next(error);
     }
   }
-  static async updateStatusOrder(req,res,next){
+  static async deleteOrder(req, res, next) {
     try {
-      let {OrderId} = req.params
-      let {status} = req.body
-      let order = await Order.findByPk(OrderId)
-      if(!order) throw { name: "errorNotFound" }
-      await order.update({
-        status : status,
-      })
-    } catch (error) {
-      console.log(error);
-      next(error)
-    }
-  }
-  static async deleteOrder(req,res,next){
-    try {
-      let {OrderId} = req.params
-      let order = await Order.findByPk(OrderId)
-      if(!order) throw { name: "errorNotFound" }
-      if(order.status === "Success") throw {name : "Only finished Order can be deleted"}
+      let { OrderId } = req.params;
+      let order = await Order.findByPk(OrderId);
+      if (!order) throw { name: "errorNotFound" };
+      if (order.status === "Success")
+        throw { name: "Only finished Order can be deleted" };
       await Item.destroy({
-        where : {
-          OrderId : OrderId
-        }
-      })
+        where: {
+          OrderId: OrderId,
+        },
+      });
       await Notification.destroy({
-        where : {
-          OrderId : OrderId
-        }
-      })
+        where: {
+          OrderId: OrderId,
+        },
+      });
       await order.destroy({
-        where :{
-          id: OrderId
-        }
-      })
-      res.status(200).json({message : "Success delete selected Order History"})
+        where: {
+          id: OrderId,
+        },
+      });
+      res
+        .status(200)
+        .json({ message: "Success delete selected Order History" });
     } catch (error) {
-      console.log(error);
-      next(error)
+      next(error);
     }
   }
-  static async listProduct(req,res,next){
+  static async listProduct(req, res, next) {
     try {
-      let product = await Product.findAll()
-      res.status(200).json(product)
+      let product = await Product.findAll();
+      res.status(200).json(product);
     } catch (error) {
-      next(error)
+      next(error);
       console.log(error);
     }
   }
-  static async createNotification (req,res,next){
+  static async createNotification(req, res, next) {
     try {
-      let UserId = req.user.id
-      let {detail, OrderId} = req.body
+      let UserId = req.user.id;
+      let { detail, OrderId } = req.body;
       let notification = await Notification.create({
         detail,
         UserId,
-        OrderId
-      })
-      res.status(200).json(notification)
+        OrderId,
+      });
+      res.status(200).json(notification);
     } catch (error) {
-      console.log(error);
-      next(error)
+      next(error);
     }
   }
-  static async getNotification (req,res,next){
+  static async getNotification(req, res, next) {
     try {
-      let UserId = req.user.id
+      let UserId = req.user.id;
       let listNotif = await Notification.findAll({
-        where : {
-          UserId : UserId
-        }
-      })
-      res.status(200).json({listNotif})
+        where: {
+          UserId: UserId,
+        },
+      });
+      res.status(200).json({ listNotif });
     } catch (error) {
-      console.log(error);
-      next(error)
+      next(error);
     }
   }
-  static async getProvince(req,res,next){
+  static async getProvince(req, res, next) {
     try {
-      let province = await Province.findAll()
-      res.status(200).json(province)
+      let province = await Province.findAll();
+      res.status(200).json(province);
     } catch (error) {
-      console.log(error);
-      next(error)
+      next(error);
+    }
+  }
+  static async changeUserPicture(req, res, next) {
+    try {
+      let id = req.user.id;
+      if (!req.file) throw { name: "fileRequired" };
+      const base64 = req.file.buffer.toString("base64");
+      const url = `data:${req.file.mimetype};base64,${base64}`;
+      let imageURL = await imagekit.upload({
+        file: url, //required
+        fileName: req.file.originalname, //required
+        tags: ["tag1", "tag2"],
+      });
+      let user = await User.findByPk(id)
+      await user.update({ profilePicture: imageURL.url });
+      res.status(200).json({message : "Profile picture successfully changed"})
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -234,7 +262,7 @@ class Controller {
   //   } catch (error) {
   //     console.log(error);
   //     next(error);
-    // }
+  // }
   // }
 }
 
