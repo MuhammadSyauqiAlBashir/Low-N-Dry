@@ -3,51 +3,14 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../constant";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import useProfile from "../hooks/useProfile";
+import useNotif from "../hooks/useNotif";
 
 function Profile() {
   const navigate = useNavigate();
-  const [data, setData] = useState({});
-  async function FetchProfile() {
-    try {
-      const { data } = await axios({
-        method: "get",
-        url: `${BASE_URL}profile`,
-        headers: {
-          Authorization: `Bearer ` + localStorage.accessToken,
-        },
-      });
-      setData(data);
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        title: error.response.data.message,
-        icon: error,
-        timer: 1000,
-        showConfirmButton: false,
-      });
-    }
-  }
-  useEffect(() => {
-    FetchProfile();
-  }, []);
-  const [Notif, setNotif] = useState([]);
-  async function FetchNotif() {
-    try {
-      const { data } = await axios({
-        method: "get",
-        url: `${BASE_URL}listNotif`,
-        headers: {
-          Authorization: `Bearer ` + localStorage.accessToken,
-        },
-      });
-      setNotif(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  useEffect(() => {
-    FetchNotif();
-  }, []);
+  const { data } = useProfile();
+  let notif = useNotif();
+  let Notif = notif.data
   const [currentImage, setCurrentImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const HandleImageChange = (event) => {

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import BASE_URL from "../constant";
+import useProvince from "../hooks/useProvince";
 
 function Register() {
   const navigate = useNavigate();
@@ -42,21 +43,7 @@ function Register() {
       });
     }
   };
-  const [data, setData] = useState([])
-  async function FetchDataPRovince() {
-    try {
-      const { data } = await axios({
-        method: "get",
-        url: `${BASE_URL}province`,
-      });
-      setData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  useEffect(() => {
-    FetchDataPRovince();
-  }, []);
+  const { data } = useProvince();
   return (
     <>
       <section className="gradient-form bg-neutral-200 dark:bg-neutral-700 h-screen w-full fixed">
@@ -134,11 +121,15 @@ function Register() {
                             onChange={handleChange}
                             className="bg-gray-50 mb-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           >
-                            <option selected value={""}>Choose Province</option>
-                            {data.map((item,index)=>{
-                            return (
-                            <option value={item.name} key={index}>{item.name}</option>
-                            )
+                            <option selected value={""}>
+                              Choose Province
+                            </option>
+                            {data.map((item, index) => {
+                              return (
+                                <option value={item.name} key={index}>
+                                  {item.name}
+                                </option>
+                              );
                             })}
                           </select>
                         </div>

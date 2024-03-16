@@ -34,7 +34,7 @@ class Controller {
       if (!checkPass) throw { name: "InvalidLogin" };
       const payload = { id: user.id };
       const accessToken = Token.genToken(payload);
-      res.status(200).json({ message: "Success Login", accessToken });
+      res.status(201).json({ message: "Success Login", accessToken });
     } catch (error) {
       next(error);
     }
@@ -104,7 +104,7 @@ class Controller {
 
       const transaction = await snap.createTransaction(parameter);
       let transactionToken = transaction.token;
-      res.json({
+      res.status(201).json({
         message: "Order Created",
         transactionToken,
         resultTotalPrice,
@@ -195,7 +195,7 @@ class Controller {
         UserId,
         OrderId,
       });
-      res.status(200).json(notification);
+      res.status(201).json(notification);
     } catch (error) {
       next(error);
     }
@@ -260,7 +260,7 @@ class Controller {
       });
       const payload = { id: user.id };
       const accessToken = Token.genToken(payload);
-      res.status(200).json({ message: "Success Login", accessToken });
+      res.status(201).json({ message: "Success Login", accessToken });
     } catch (error) {
       next(error);
     }
