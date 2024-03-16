@@ -51,6 +51,7 @@ function Login() {
           googleToken: credential,
         },
       });
+      console.log(credential);
       localStorage.accessToken = data.accessToken;
       navigate("/");
       Swal.fire({

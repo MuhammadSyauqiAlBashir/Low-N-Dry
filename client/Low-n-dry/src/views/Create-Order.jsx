@@ -3,9 +3,11 @@ import BASE_URL from "../constant";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import useProduct from "../hooks/useProduct";
+import { useNavigate } from "react-router-dom";
 
 function CreateOrder() {
   const [items, setItems] = useState([]);
+  const navigate = useNavigate();
   const { data } = useProduct();
 
   function addCart(event) {
@@ -17,15 +19,15 @@ function CreateOrder() {
 
     setItems((prev) => {
       let found = false;
-      let newData = prev.map((val) => {
-        if (val?.ProductId === newItems.ProductId) {
+      let newData = prev.map((item) => {
+        if (item.ProductId === newItems.ProductId) {
           found = true;
           return {
-            ProductId: val.ProductId,
-            totalPieces: val.totalPieces + newItems.totalPieces,
+            ProductId: item.ProductId,
+            totalPieces: item.totalPieces + newItems.totalPieces,
           };
         }
-        return val;
+        return item;
       });
       if (!found) {
         newData = [...newData, newItems];
@@ -34,40 +36,6 @@ function CreateOrder() {
     });
   }
 
-  //   async function checkOut() {
-  //     // if (typeof window !== "undefined") {
-  //     //   if (window.snap) {
-  //     //     try {
-  //     //       const { data } = await axios({
-  //     //         method: "post",
-  //     //         url: `${BASE_URL}order`,
-  //     //         headers: {
-  //     //           Authorization: `Bearer ` + localStorage.accessToken,
-  //     //         },
-  //     //         data: {
-  //     //           typeOfService: "express",
-  //     //           items: items,
-  //     //         },
-  //     //       });
-  //     //       if (!data.transactionToken) throw Error("MIDTRANS_ERROR");
-  //     //       window.snap.embed(data?.transactionToken, {
-  //     //         embedId: "snap-container",
-  //     //       });
-  //     //     } catch (error) {
-  //     //       Swal.fire({
-  //     //         title: "Internal server error",
-  //     //         text: "There is an error processing your payment",
-  //     //       });
-  //     //     }
-  //     //   } else {
-  //     //     Swal.fire({
-  //     //       title: "Internal server error",
-  //     //       text: "Midtrans not ready",
-  //     //     });
-  //     //   }
-  //     // }
-
-  //   }
   const checkOut = async () => {
     const { data } = await axios({
       method: "POST",
@@ -80,10 +48,8 @@ function CreateOrder() {
         items: items,
       },
     });
-    console.log(data);
     window.snap.pay(data.transactionToken, {
       onSuccess: async function (result) {
-        /* You may add your own implementation here */
         await axios({
           method: "PATCH",
           url: `${BASE_URL}order/${data.order.id}`,
@@ -91,6 +57,7 @@ function CreateOrder() {
             Authorization: "Bearer " + localStorage.accessToken,
           },
         });
+        navigate("/my-order");
       },
     });
   };
@@ -102,39 +69,47 @@ function CreateOrder() {
         <button id="pay-button" onClick={checkOut}>
           Check Out
         </button>
-        {data &&
-          data.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
-              >
-                <img className="rounded-t-lg h-44" src={item.picture} alt="" />
-                <div className="p-5">
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    {item.name}
-                  </h5>
-                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(item.price)}
-                  </p>
-                  <form onSubmit={addCart}>
-                    <input name="productId" type="hidden" value={item.id} />
-                    <label htmlFor="numberInput">Total Pieces:</label>
-                    <input
-                      type="number"
-                      id="numberInput"
-                      min="1"
-                      name="totalPieces"
-                    ></input>
-                    <button type="submit">Add to Cart</button>
-                  </form>
+        <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {data &&
+            data.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <div className="flex justify-center bg-white rounded-t-lg">
+                    <img
+                      className="rounded-t-lg h-44"
+                      src={item.picture}
+                      alt=""
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      {item.name}
+                    </h5>
+                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(item.price)}
+                    </p>
+                    <form onSubmit={addCart}>
+                      <input name="productId" type="hidden" value={item.id} />
+                      <label htmlFor="numberInput">Total Pieces:</label>
+                      <input
+                        type="number"
+                        id="numberInput"
+                        min="1"
+                        name="totalPieces"
+                      ></input>
+                      <button type="submit">Add to Cart</button>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+        </div>
       </div>
     </>
   );

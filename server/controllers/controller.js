@@ -244,6 +244,7 @@ class Controller {
         idToken: googleToken,
         audience:process.env.CLIENTID,
       });
+      if (!ticket) throw { name: "InvalidLogin" };
       const { email, name } = ticket.getPayload();
       const [user, created] = await User.findOrCreate({
         where: { email },

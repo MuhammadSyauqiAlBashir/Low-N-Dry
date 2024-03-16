@@ -2,8 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../constant";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
+  const navigate = useNavigate();
   const [data, setData] = useState({});
   async function FetchProfile() {
     try {
@@ -28,38 +30,6 @@ function Profile() {
   useEffect(() => {
     FetchProfile();
   }, []);
-    const HandleImageChange = (event) => {
-    const image = event.target.files[0];
-    setCurrentImage(image);
-  };
-  const HandlePatchImage = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("photo", currentImage);
-      const { data } = await axios({
-        method: "patch",
-        url: `${BASE_URL}cuisine/${idPatch}`,
-        headers: {
-          Authorization: `Bearer ` + localStorage.accessToken,
-          "Content-Type": "multipart/form-data",
-        },
-        data: formData,
-      });
-      setCurrentImage(null);
-      if (!data) throw (error.response.data.message = "Please input file");
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        title: error.response.data.message,
-        icon: "error",
-      });
-    } finally {
-      FetchData();
-      setLoading(false);
-    }
-  };
   const [Notif, setNotif] = useState([]);
   async function FetchNotif() {
     try {
@@ -78,7 +48,52 @@ function Profile() {
   useEffect(() => {
     FetchNotif();
   }, []);
-  
+  const [currentImage, setCurrentImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const HandleImageChange = (event) => {
+    const image = event.target.files[0];
+    setCurrentImage(image);
+  };
+  const handleChangePicture = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("photo", currentImage);
+      const { data } = await axios({
+        method: "patch",
+        url: `${BASE_URL}updatePhoto`,
+        headers: {
+          Authorization: `Bearer ` + localStorage.accessToken,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      });
+      setCurrentImage(null);
+      if (!data) throw (error.response.data.message = "Please input file");
+      navigate("/profile");
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: error.response.data.message,
+        icon: "error",
+      });
+    } finally {
+      FetchProfile();
+      setLoading(false);
+    }
+  };
+  if (loading) {
+    return (
+      <div
+        className="spinner-border text-info container d-flex align-items-center fixed-top"
+        role="status"
+        style={{ marginTop: 300 }}
+      >
+        <span className="sr-only">Loading...</span>
+      </div>
+    );
+  }
   return (
     <>
       <div className="p-6 flex flex-col justify-center items-center">
@@ -88,10 +103,15 @@ function Profile() {
             alt="image"
             className="w-20 h-20 rounded-full border-2 border-black"
           />
-          <div className="ml-4 mt-4">
+          <div className="ml-4">
             <p>{data.email}</p>
             <p>{data.address}</p>
-            <button>Change Profile Picture</button>
+            <div>
+              <form onSubmit={handleChangePicture}>
+                <input onChange={HandleImageChange} type="file" />
+                <button>Change Profile Picture</button>
+              </form>
+            </div>
           </div>
         </div>
         <div className="space-y-2 mt-6">
