@@ -154,7 +154,7 @@ class Controller {
       let { OrderId } = req.params;
       let order = await Order.findByPk(OrderId);
       if (!order) throw { name: "errorNotFound" };
-      if (order.status === "Success")
+      if (order.status === "Finished")
         throw { name: "Only finished Order can be deleted" };
       await Item.destroy({
         where: {
