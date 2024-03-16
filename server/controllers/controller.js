@@ -120,7 +120,7 @@ class Controller {
       let order = await Order.findByPk(OrderId);
       if (!order) throw { name: "errorNotFound" };
       if (order.status === "Finished") {
-        throw {name : "Finished Order Cant be Change"}
+        throw { name: "Finished Order Cant be Change" };
       }
       order.update({
         status: "Processed",
@@ -154,8 +154,9 @@ class Controller {
       let { OrderId } = req.params;
       let order = await Order.findByPk(OrderId);
       if (!order) throw { name: "errorNotFound" };
-      if (order.status === "Finished")
+      if (order.status !== "Finished") {
         throw { name: "Only finished Order can be deleted" };
+      }
       await Item.destroy({
         where: {
           OrderId: OrderId,

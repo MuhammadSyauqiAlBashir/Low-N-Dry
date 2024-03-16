@@ -5,6 +5,30 @@ import useOrder from "../hooks/useOrder";
 
 function MyOrder() {
   const { data } = useOrder();
+  const [deleteOrderparams, setDeleteOrder] = useState(0);
+  async function deleteOrder() {
+    try {
+      const { data } = await axios({
+        method: "delete",
+        url: `${BASE_URL}order/${deleteOrderparams}`,
+        headers: {
+          Authorization: `Bearer ` + localStorage.accessToken,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: error.response.data.message,
+        icon: error,
+        timer: 1000,
+        showConfirmButton: false,
+      });
+    }
+  }
+  useEffect(() => {
+    if (deleteOrderparams) deleteOrder();
+  }, [deleteOrderparams]);
+
   return (
     <>
       {data.map((item, index) => {
@@ -17,6 +41,14 @@ function MyOrder() {
               <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 Laundry Status : {item.status}
               </h5>
+              <button
+                className="tracking-tight text-gray-900 dark:text-white"
+                onClick={() => {
+                    setDeleteOrder(item.id);
+                }}
+              >
+                Delete Order History
+              </button>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
                 {item.Items.map((item2, index2) => {
                   return (
