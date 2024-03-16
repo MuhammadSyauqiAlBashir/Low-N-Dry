@@ -26,7 +26,7 @@ function App() {
           element: <Home />
         },
         {
-          path : "/list-price",
+          path : "/price-list",
           element : <ListPrice/>
         }
       ]

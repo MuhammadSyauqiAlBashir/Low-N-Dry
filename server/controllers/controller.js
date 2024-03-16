@@ -17,7 +17,6 @@ const {
   Item,
   Notification,
 } = require("../models");
-const { Op } = require("sequelize");
 
 class Controller {
   static async login(req, res, next) {
@@ -239,31 +238,31 @@ class Controller {
     }
   }
 
-  // static async googleLogin(req, res, next) {
-  //   const { googleToken } = req.body;
-  //   try {
-  //     const ticket = await client.verifyIdToken({
-  //       idToken: googleToken,
-  //       audience:
-  //         "591988567538-r3lr3o6g8d99398uj0mbd4bm4r3tqo9r.apps.googleusercontent.com",
-  //     });
-  //     const { email, name } = ticket.getPayload();
-  //     const [user, created] = await User.findOrCreate({
-  //       where: { email },
-  //       defaults: {
-  //         username: name,
-  //         email,
-  //         password: Math.random().toString(),
-  //       },
-  //     });
-  //     const payload = { id: user.id };
-  //     const token = signToken(payload);
-  //     res.status(200).json({ message: `Success Logged in as ${email}`, token });
-  //   } catch (error) {
-  //     console.log(error);
-  //     next(error);
-  // }
-  // }
+  static async googleLogin(req, res, next) {
+    const { googleToken } = req.body;
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: googleToken,
+        audience:process.env.CLIENTID,
+      });
+      const { email, name } = ticket.getPayload();
+      const [user, created] = await User.findOrCreate({
+        where: { email },
+        defaults: {
+          username: name,
+          email,
+          password: Math.random().toString(),
+          address : "DKI Jakarta"
+        },
+      });
+      const payload = { id: user.id };
+      const accessToken = Token.genToken(payload);
+      res.status(200).json({ message: "Success Login", accessToken });
+    } catch (error) {
+      console.log(error);
+      next(error);
+  }
+  }
 }
 
 module.exports = Controller;

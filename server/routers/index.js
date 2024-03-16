@@ -6,6 +6,8 @@ const router = express.Router()
 
 router.post('/login', Controller.login)
 router.post('/register', Controller.register)
+router.post('/googleLogin', Controller.googleLogin)
+router.get('/province', Controller.getProvince)
 
 router.use(middleware.authentication)
 router.patch('/updatePhoto',upload.single('photo'), Controller.changeUserPicture)
@@ -16,7 +18,6 @@ router.delete('/order/:OrderId', Controller.deleteOrder)
 router.post('/createNotif', Controller.createNotification)
 router.get('/listNotif', Controller.getNotification)
 router.get('/listProduct', Controller.listProduct)
-router.get('/province', Controller.getProvince)
 
 
 router.use(middleware.errorHandler)
