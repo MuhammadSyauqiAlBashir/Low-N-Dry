@@ -82,12 +82,15 @@ class Controller {
         return totalPrice;
       };
       const resultTotalPrice = await createITems();
-      if (typeOfService === "Sensational"){
-        resultTotalPrice = resultTotalPrice + (resultTotalPrice*70/100)
+      if (typeOfService === "Sensational") {
+        resultTotalPrice = resultTotalPrice + (resultTotalPrice * 70) / 100;
       }
       let parameter = {
         transaction_details: {
-          order_id: process.env.NODE_ENV !== "production"? `${order.id}-dev` : `${order.id}-prod`,
+          order_id:
+            process.env.NODE_ENV !== "production"
+              ? `${order.id}-dev`
+              : `${order.id}-prod`,
           gross_amount: resultTotalPrice,
         },
         credit_card: {
@@ -105,7 +108,7 @@ class Controller {
         message: "Order Created",
         transactionToken,
         resultTotalPrice,
-        order
+        order,
       });
     } catch (error) {
       next(error);
@@ -229,22 +232,22 @@ class Controller {
         fileName: req.file.originalname, //required
         tags: ["tag1", "tag2"],
       });
-      let user = await User.findByPk(id)
+      let user = await User.findByPk(id);
       await user.update({ profilePicture: imageURL.url });
-      res.status(200).json({message : "Profile picture successfully changed"})
+      res.status(200).json({ message: "Profile picture successfully changed" });
     } catch (error) {
       next(error);
     }
   }
 
   static async googleLogin(req, res, next) {
-    const { googleToken } = req.body;
     try {
+      const { googleToken } = req.body;
+      if (!googleToken) throw { name: "InvalidToken" };
       const ticket = await client.verifyIdToken({
         idToken: googleToken,
-        audience:process.env.CLIENTID,
+        audience: process.env.CLIENTID,
       });
-      if (!ticket) throw { name: "InvalidLogin" };
       const { email, name } = ticket.getPayload();
       const [user, created] = await User.findOrCreate({
         where: { email },
@@ -252,7 +255,7 @@ class Controller {
           username: name,
           email,
           password: Math.random().toString(),
-          address : "DKI Jakarta"
+          address: "DKI Jakarta",
         },
       });
       const payload = { id: user.id };
@@ -260,23 +263,23 @@ class Controller {
       res.status(200).json({ message: "Success Login", accessToken });
     } catch (error) {
       next(error);
+    }
   }
-  }
-  static async getProfile(req,res,next){
+  static async getProfile(req, res, next) {
     try {
       let UserId = req.user.id;
       let user = await User.findOne({
-        where : {
-          id : UserId
+        where: {
+          id: UserId,
         },
         attributes: {
           exclude: ["password"],
         },
-      })
-      if(!user) throw { name: "errorNotFound" };
-      res.status(200).json(user)
+      });
+      if (!user) throw { name: "errorNotFound" };
+      res.status(200).json(user);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }
