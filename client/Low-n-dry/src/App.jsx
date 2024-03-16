@@ -10,6 +10,7 @@ import Register from "./views/Register";
 import ListPrice from "./views/List-Price";
 import Profile from "./views/Profile";
 import MyOrder from "./views/My-Order";
+import CreateOrder from "./views/Create-Order";
 
 
 function App() {
@@ -38,6 +39,10 @@ function App() {
         {
           path : "/my-order",
           element : <MyOrder/>
+        },
+        {
+          path : "/create-order",
+          element : <CreateOrder/>
         }
       ]
     },

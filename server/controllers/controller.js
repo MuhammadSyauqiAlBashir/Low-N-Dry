@@ -82,6 +82,9 @@ class Controller {
         return totalPrice;
       };
       const resultTotalPrice = await createITems();
+      if (typeOfService === "Sensational"){
+        resultTotalPrice = resultTotalPrice + (resultTotalPrice*70/100)
+      }
       let parameter = {
         transaction_details: {
           order_id: process.env.NODE_ENV !== "production"? `${order.id}-dev` : `${order.id}-prod`,
@@ -129,7 +132,7 @@ class Controller {
   static async getListOrder(req, res, next) {
     try {
       let UserId = req.user.id;
-      let order = await Order.findOne({
+      let order = await Order.findAll({
         where: {
           UserId,
         },
@@ -140,7 +143,6 @@ class Controller {
           },
         ],
       });
-      console.log(order);
       res.status(200).json(order);
     } catch (error) {
       next(error);

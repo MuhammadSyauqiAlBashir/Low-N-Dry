@@ -5,6 +5,7 @@ const express = require('express')
 const router = require('./routers')
 const app = express()
 var cron = require('node-cron');
+
 const cors = require('cors')
 const {
     User,
@@ -14,7 +15,6 @@ const {
 const nodemailer = require('nodemailer')
 
 cron.schedule('0-59 0-12 1-31 1-12 0-6', async () => {
-    // console.log('running a task every minute');
     let listOrder = await Order.findAll()
     listOrder.map(async (el) => {
         const currentTime = Date.now()
@@ -41,13 +41,14 @@ cron.schedule('0-59 0-12 1-31 1-12 0-6', async () => {
             await transporter.sendMail({
                 from: 'bashirsuki@gmail.com',
                 // to: `${user.email}`,
-                to: "bashirsyauqi@gmail.com",
+                to: user.email,
                 subject: "Laundry Has been finished",
                 text: `Pesanan anda dengan OrderId ${el.id} telah di proses dengan baik, silahkan hubungin admin untuk proses penjemputan.`,
             });        
             }
         }
   )});
+  
 app.use(cors())
 
 app.use(express.urlencoded({extended: false}))
@@ -55,5 +56,9 @@ app.use(express.json())
 
 app.use(router)
 
+app.listen(3000, () => {
+    console.log(`Example app listening on port 3000`)
+})
 
-module.exports = app
+
+// module.exports = app
