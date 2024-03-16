@@ -119,11 +119,12 @@ class Controller {
       let { OrderId } = req.params;
       let order = await Order.findByPk(OrderId);
       if (!order) throw { name: "errorNotFound" };
-      if (order.status !== "Finished") {
-        order.update({
-          status: "Processed",
-        });
+      if (order.status === "Finished") {
+        throw {name : "Finished Order Cant be Change"}
       }
+      order.update({
+        status: "Processed",
+      });
       res.status(200).json({ message: "Order hasbeen updated to processed" });
     } catch (error) {
       next(error);

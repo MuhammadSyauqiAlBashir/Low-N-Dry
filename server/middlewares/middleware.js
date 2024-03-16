@@ -52,6 +52,11 @@ class middleware {
         break;
       case "Only finished Order can be deleted":
         res.status(400).json({ message: "Only finished Order can be deleted" });
+        break
+      case "Finished Order Cant be Change":
+        res.status(400).json({ message: "Finished Order Cant be Change" });
+        break
+
       default:
         console.log(err);
         res.status(500).json({ message: "Internal Server Error" });
