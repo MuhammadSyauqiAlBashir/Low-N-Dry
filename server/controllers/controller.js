@@ -113,8 +113,8 @@ class Controller {
   }
   static async donePayment(req, res, next) {
     try {
-      let { id } = req.params;
-      let order = await Order.findByPk(id);
+      let { OrderId } = req.params;
+      let order = await Order.findByPk(OrderId);
       if (!order) throw { name: "errorNotFound" };
       if (order.status !== "Finished") {
         order.update({
