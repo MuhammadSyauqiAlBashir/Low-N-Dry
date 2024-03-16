@@ -13,6 +13,7 @@ function Navbar() {
           background:
             "linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593)",
         }}
+        className="w-screen h-16 fixed"
       >
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link

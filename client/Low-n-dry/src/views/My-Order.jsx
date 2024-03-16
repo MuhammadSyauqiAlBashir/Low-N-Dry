@@ -2,19 +2,23 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../constant";
 import useOrder from "../hooks/useOrder";
+import { useDispatch } from "react-redux";
+import {  resetOrder } from "../redux/order";
 
 function MyOrder() {
-  const { data } = useOrder();
+  let { data } = useOrder();
+  const dispatch = useDispatch()
   const [deleteOrderparams, setDeleteOrder] = useState(0);
   async function deleteOrder() {
     try {
-      const { data } = await axios({
+      await axios({
         method: "delete",
         url: `${BASE_URL}order/${deleteOrderparams}`,
         headers: {
           Authorization: `Bearer ` + localStorage.accessToken,
         },
       });
+      dispatch(resetOrder())
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -42,9 +46,9 @@ function MyOrder() {
                 Laundry Status : {item.status}
               </h5>
               <button
-                className="tracking-tight text-gray-900 dark:text-white"
+                className="bg-red-500 mb-4 hover:bg-red-600 px-4 py-2 text-xl text-white rounded-md mt-3"
                 onClick={() => {
-                    setDeleteOrder(item.id);
+                  setDeleteOrder(item.id);
                 }}
               >
                 Delete Order History
