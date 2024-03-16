@@ -86,7 +86,7 @@ function CreateOrder() {
         /* You may add your own implementation here */
         await axios({
           method: "PATCH",
-          url: `${BASE_URL}/order/${data.order.id}`,
+          url: `${BASE_URL}order/${data.order.id}`,
           headers: {
             Authorization: "Bearer " + localStorage.accessToken,
           },
