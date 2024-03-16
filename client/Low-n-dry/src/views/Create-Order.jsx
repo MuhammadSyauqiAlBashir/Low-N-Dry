@@ -65,8 +65,12 @@ function CreateOrder() {
   return (
     <>
       <div id="snap-container"></div>
-      <div className="p-10">
-        <button id="pay-button" onClick={checkOut}>
+      <div className="p-10 flex justify-center items center flex-col">
+        <button
+          className="bg-green-500 hover:bg-green-600 px-4 py-2 text-white rounded-md mt-3 "
+          id="pay-button"
+          onClick={checkOut}
+        >
           Check Out
         </button>
         <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -96,14 +100,21 @@ function CreateOrder() {
                     </p>
                     <form onSubmit={addCart}>
                       <input name="productId" type="hidden" value={item.id} />
-                      <label htmlFor="numberInput">Total Pieces:</label>
+                      <label htmlFor="numberInput" className="text-white mr-4">
+                        Total Pieces:
+                      </label>
                       <input
                         type="number"
                         id="numberInput"
                         min="1"
                         name="totalPieces"
                       ></input>
-                      <button type="submit">Add to Cart</button>
+                      <button
+                        className="bg-green-500 hover:bg-green-600 px-4 py-2 text-white rounded-md mt-3"
+                        type="submit"
+                      >
+                        Add to Cart
+                      </button>
                     </form>
                   </div>
                 </div>

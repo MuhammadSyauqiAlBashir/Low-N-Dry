@@ -51,7 +51,6 @@ function Login() {
           googleToken: credential,
         },
       });
-      console.log(credential);
       localStorage.accessToken = data.accessToken;
       navigate("/");
       Swal.fire({
@@ -65,15 +64,19 @@ function Login() {
     }
   };
   useEffect(() => {
-    google.accounts.id.initialize({
-      client_id:
-        "591988567538-r3lr3o6g8d99398uj0mbd4bm4r3tqo9r.apps.googleusercontent.com",
-      callback: handleCredentialRes,
-    });
-    google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
-      theme: "outline",
-      size: "large",
-    });
+    if (typeof window !== "undefined"){
+      if (!!window?.google){
+        google.accounts.id.initialize({
+          client_id:
+            "591988567538-r3lr3o6g8d99398uj0mbd4bm4r3tqo9r.apps.googleusercontent.com",
+          callback: handleCredentialRes,
+        });
+        google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
+          theme: "outline",
+          size: "large",
+        });
+      }
+    }
   }, []);
   return (
     <>

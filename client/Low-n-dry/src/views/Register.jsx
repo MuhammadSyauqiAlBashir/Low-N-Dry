@@ -145,7 +145,7 @@ function Register() {
                                 "linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593)",
                             }}
                           >
-                            Log in
+                            Sign Up
                           </button>
                         </div>
                         <div className="flex items-center justify-between pb-6">
