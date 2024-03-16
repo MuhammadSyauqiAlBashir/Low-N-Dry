@@ -8,6 +8,8 @@ import Home from './views/Home';
 import MainLayout from './components/MainLayout';
 import Register from "./views/Register";
 import ListPrice from "./views/List-Price";
+import Profile from "./views/Profile";
+import MyOrder from "./views/My-Order";
 
 
 function App() {
@@ -28,6 +30,14 @@ function App() {
         {
           path : "/price-list",
           element : <ListPrice/>
+        },
+        {
+          path : "/profile",
+          element : <Profile/>
+        },
+        {
+          path : "/my-order",
+          element : <MyOrder/>
         }
       ]
     },

@@ -18,6 +18,7 @@ router.delete('/order/:OrderId', Controller.deleteOrder)
 router.post('/createNotif', Controller.createNotification)
 router.get('/listNotif', Controller.getNotification)
 router.get('/listProduct', Controller.listProduct)
+router.get('/profile', Controller.getProfile)
 
 
 router.use(middleware.errorHandler)

@@ -206,7 +206,7 @@ class Controller {
           UserId: UserId,
         },
       });
-      res.status(200).json({ listNotif });
+      res.status(200).json(listNotif);
     } catch (error) {
       next(error);
     }
@@ -259,9 +259,25 @@ class Controller {
       const accessToken = Token.genToken(payload);
       res.status(200).json({ message: "Success Login", accessToken });
     } catch (error) {
-      console.log(error);
       next(error);
   }
+  }
+  static async getProfile(req,res,next){
+    try {
+      let UserId = req.user.id;
+      let user = await User.findOne({
+        where : {
+          id : UserId
+        },
+        attributes: {
+          exclude: ["password"],
+        },
+      })
+      if(!user) throw { name: "errorNotFound" };
+      res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
