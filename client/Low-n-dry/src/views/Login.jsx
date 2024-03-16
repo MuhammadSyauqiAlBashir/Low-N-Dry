@@ -46,7 +46,7 @@ function Login() {
     try {
       const { data } = await axios({
         method: "POST",
-        url: `http://localhost:3000/googleLogin`,
+        url: `${BASE_URL}login`,
         data: {
           googleToken: credential,
         },
