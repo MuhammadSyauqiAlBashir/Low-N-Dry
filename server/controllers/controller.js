@@ -105,6 +105,7 @@ class Controller {
         message: "Order Created",
         transactionToken,
         resultTotalPrice,
+        order
       });
     } catch (error) {
       next(error);

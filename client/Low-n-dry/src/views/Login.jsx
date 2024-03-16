@@ -46,12 +46,12 @@ function Login() {
     try {
       const { data } = await axios({
         method: "POST",
-        url: `${BASE_URL}login`,
+        url: `${BASE_URL}googleLogin`,
         data: {
           googleToken: credential,
         },
       });
-      localStorage.accessToken = data.accessToken
+      localStorage.accessToken = data.accessToken;
       navigate("/");
       Swal.fire({
         title: data.message,
@@ -63,7 +63,7 @@ function Login() {
       console.log(error);
     }
   };
-   useEffect(() => {
+  useEffect(() => {
     google.accounts.id.initialize({
       client_id:
         "591988567538-r3lr3o6g8d99398uj0mbd4bm4r3tqo9r.apps.googleusercontent.com",
@@ -113,7 +113,11 @@ function Login() {
                           />
                           <label
                             htmlFor="exampleFormControlInput1"
-                            className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[twe-input-state-active]:-translate-y-[0.9rem] peer-data-[twe-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-400 dark:peer-focus:text-primary"
+                            className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out 
+                            
+                            peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary
+                            
+                            peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[twe-input-state-active]:-translate-y-[0.9rem] peer-data-[twe-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-400 dark:peer-focus:text-primary"
                           >
                             Email
                           </label>
@@ -165,8 +169,11 @@ function Login() {
                             Register
                           </Link>
                         </div>
-                        <div className="flex items-center rounded-b-lg justify-center" id="buttonDiv"></div>
                       </form>
+                      <div
+                        className="flex items-center rounded-b-lg justify-center"
+                        id="buttonDiv"
+                      ></div>
                     </div>
                   </div>
                   {/* Right column container with background and description*/}
@@ -179,7 +186,10 @@ function Login() {
                   >
                     <div className="px-4 py-6 text-white md:mx-6 md:p-12">
                       <h4 className="mb-6 text-xl font-semibold"></h4>
-                      <img src="/image.png.png" className="flex items-center justify-center"/>
+                      <img
+                        src="/image.png.png"
+                        className="flex items-center justify-center"
+                      />
                     </div>
                   </div>
                 </div>

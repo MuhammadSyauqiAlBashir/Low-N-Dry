@@ -1,27 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import BASE_URL from "../constant";
+import useOrder from "../hooks/useOrder";
 
 function MyOrder() {
-  const [data, setData] = useState([]);
-  async function FetchOrder() {
-    try {
-      const { data } = await axios({
-        method: "get",
-        url: `${BASE_URL}order`,
-        headers: {
-          Authorization: `Bearer ` + localStorage.accessToken,
-        },
-      });
-      setData(data);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  useEffect(() => {
-    FetchOrder();
-  }, []);
+  const { data } = useOrder();
   return (
     <>
       {data.map((item, index) => {
@@ -36,9 +19,9 @@ function MyOrder() {
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {item.status}
             </h5>
-            {item.Items.map((item2, index) => {
+            {item.Items.map((item2, index2) => {
               return (
-                <div>
+                <div key={index2}>
                   <img src={item2.Product.picture} alt="" />
                   <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {item2.Product.name}
