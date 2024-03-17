@@ -16,7 +16,6 @@ function CreateOrder() {
       ProductId: event.target[0].value,
       totalPieces: parseInt(event.target[1].value),
     };
-
     setItems((prev) => {
       let found = false;
       let newData = prev.map((item) => {
@@ -34,6 +33,10 @@ function CreateOrder() {
       }
       return newData;
     });
+    Swal.fire({
+      title: "success added to cart",
+      icon : "success"
+    })
   }
 
   const checkOut = async () => {

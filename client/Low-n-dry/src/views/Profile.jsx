@@ -5,21 +5,22 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import useProfile from "../hooks/useProfile";
 import useNotif from "../hooks/useNotif";
+import { useDispatch, useSelector } from "react-redux";
+import { resetProfile, updateProfile } from "../redux/profile";
 
 function Profile() {
   const navigate = useNavigate();
-  const { data } = useProfile();
+  const dispatch = useDispatch();
+  let { data } = useProfile();
   let notif = useNotif();
-  let Notif = notif.data
+  let Notif = notif.data;
   const [currentImage, setCurrentImage] = useState(null);
-  const [loading, setLoading] = useState(false);
   const HandleImageChange = (event) => {
     const image = event.target.files[0];
     setCurrentImage(image);
   };
   const handleChangePicture = async (event) => {
     event.preventDefault();
-    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("photo", currentImage);
@@ -34,7 +35,6 @@ function Profile() {
       });
       setCurrentImage(null);
       if (!data) throw (error.response.data.message = "Please input file");
-      navigate("/profile");
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -42,21 +42,9 @@ function Profile() {
         icon: "error",
       });
     } finally {
-      FetchProfile();
-      setLoading(false);
+      dispatch(resetProfile());
     }
   };
-  if (loading) {
-    return (
-      <div
-        className="spinner-border text-info container d-flex align-items-center fixed-top"
-        role="status"
-        style={{ marginTop: 300 }}
-      >
-        <span className="sr-only">Loading...</span>
-      </div>
-    );
-  }
   return (
     <>
       <div className="p-6 flex flex-col justify-center items-center">
@@ -72,7 +60,9 @@ function Profile() {
             <div>
               <form onSubmit={handleChangePicture}>
                 <input onChange={HandleImageChange} type="file" />
-                <button>Change Profile Picture</button>
+                <button className="bg-green-500 hover:bg-green-600 px-4 py-2 text-white rounded-md mt-3">
+                  Change Profile Picture
+                </button>
               </form>
             </div>
           </div>
