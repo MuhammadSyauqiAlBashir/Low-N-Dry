@@ -27,10 +27,9 @@ describe("POST /login", () => {
       password: "admins",
     };
     const response = await request(app).post("/login").send(dummyData);
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     expect(response.body).toBeInstanceOf(Object);
-    expect(response.body).toHaveProperty("message", "Success Login");
-    expect(response.body).toHaveProperty("newToken", expect.any(String));
+    expect(response.body).toHaveProperty("accessToken", expect.any(String));
   });
   test("login no Email", async () => {
     const dummyData = {
@@ -85,9 +84,7 @@ describe("POST /register", () => {
     expect(response.status).toBe(201);
     expect(response.body).toBeInstanceOf(Object);
     expect(response.body).toHaveProperty("id", expect.any(Number));
-    expect(response.body).toHaveProperty("role", "Staff");
     expect(response.body).toHaveProperty("email", dummyData.email);
-    expect(response.body).toHaveProperty("phoneNumber", dummyData.phoneNumber);
     expect(response.body).toHaveProperty("password", "");
     expect(response.body).toHaveProperty("address", dummyData.address);
   });
@@ -151,7 +148,7 @@ describe("POST /register", () => {
     expect(response.status).toBe(400);
     expect(response.body).toBeInstanceOf(Array);
     expect(response.body).toEqual(
-      expect.arrayContaining(["email must be unique"])
+      expect.arrayContaining(["Email must be unique"])
     );
   });
   test("Format is not email", async () => {

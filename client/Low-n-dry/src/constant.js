@@ -1,2 +1,2 @@
-const BASE_URL = "https://individual-project.watersnj.com/";
+const BASE_URL = "https://lowndryserv.watersnj.com/";
 export default BASE_URL;

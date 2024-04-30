@@ -4,6 +4,8 @@ import BASE_URL from "../constant";
 import useOrder from "../hooks/useOrder";
 import { useDispatch } from "react-redux";
 import {  resetOrder } from "../redux/order";
+import Swal from "sweetalert2";
+
 
 function MyOrder() {
   let { data } = useOrder();
